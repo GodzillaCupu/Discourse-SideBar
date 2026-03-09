@@ -1,0 +1,123 @@
+{{!-- Gasing Sidebar — collapsible custom sidebar --}}
+<nav class="gs-sidebar {{if this.collapsed 'gs-sidebar--collapsed'}}" aria-label="Navigasi Gasing">
+
+  {{!-- ── TOP: Logo + Collapse Toggle ── --}}
+  <div class="gs-sidebar__top">
+    <a href="/" class="gs-sidebar__logo" title="Gasing Community">
+      <span class="gs-sidebar__logo-icon">GC</span>
+      {{#unless this.collapsed}}
+        <span class="gs-sidebar__logo-text">GC LOGO</span>
+      {{/unless}}
+    </a>
+    <button
+      class="gs-sidebar__toggle"
+      type="button"
+      title={{if this.collapsed "Expand sidebar" "Collapse sidebar"}}
+      {{on "click" this.toggleCollapse}}
+    >
+      {{#if this.collapsed}}
+        {{!-- chevron right --}}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      {{else}}
+        {{!-- chevron left --}}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      {{/if}}
+    </button>
+  </div>
+
+  {{!-- ── NAVIGATION ── --}}
+  <div class="gs-sidebar__nav">
+    {{#each this.navItems as |item|}}
+
+      {{#if item.children}}
+        {{!-- Group item with children --}}
+        <div class="gs-nav-group">
+          <button
+            class="gs-nav-item gs-nav-item--group {{if (this.isGroupOpen item.id) 'gs-nav-item--open'}}"
+            type="button"
+            title={{if this.collapsed item.label ""}}
+            {{on "click" (fn this.toggleGroup item.id)}}
+          >
+            <span class="gs-nav-item__icon">{{{item.icon}}}</span>
+            {{#unless this.collapsed}}
+              <span class="gs-nav-item__label">{{item.label}}</span>
+              <span class="gs-nav-item__chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            {{/unless}}
+          </button>
+
+          {{#unless this.collapsed}}
+            {{#if (this.isGroupOpen item.id)}}
+              <div class="gs-nav-children">
+                {{#each item.children as |child|}}
+                  <a
+                    href={{child.href}}
+                    class="gs-nav-child {{if (this.isActive child.href) 'gs-nav-child--active'}}"
+                  >
+                    {{child.label}}
+                    {{#if child.dot}}
+                      <span class="gs-nav-child__dot"></span>
+                    {{/if}}
+                  </a>
+                {{/each}}
+              </div>
+            {{/if}}
+          {{/unless}}
+        </div>
+
+      {{else}}
+        {{!-- Single nav item --}}
+        <a
+          href={{item.href}}
+          class="gs-nav-item {{if (this.isActive item.href) 'gs-nav-item--active'}}"
+          title={{if this.collapsed item.label ""}}
+        >
+          <span class="gs-nav-item__icon">{{{item.icon}}}</span>
+          {{#unless this.collapsed}}
+            <span class="gs-nav-item__label">{{item.label}}</span>
+          {{/unless}}
+        </a>
+      {{/if}}
+
+    {{/each}}
+  </div>
+
+  {{!-- ── BOTTOM: User Profile ── --}}
+  <div class="gs-sidebar__bottom">
+    {{#if this.isLoggedIn}}
+      <a
+        href="/u/{{this.username}}"
+        class="gs-sidebar__profile"
+        title={{if this.collapsed this.displayName ""}}
+      >
+        {{#if this.userAvatarUrl}}
+          <img src={{this.userAvatarUrl}} alt={{this.displayName}} class="gs-sidebar__avatar" />
+        {{else}}
+          <span class="gs-sidebar__avatar-placeholder">
+            {{substring this.displayName 0 1}}
+          </span>
+        {{/if}}
+        {{#unless this.collapsed}}
+          <div class="gs-sidebar__profile-info">
+            <span class="gs-sidebar__profile-name">{{this.displayName}}</span>
+            <span class="gs-sidebar__profile-username">@{{this.username}}</span>
+          </div>
+          <span class="gs-sidebar__profile-chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        {{/unless}}
+      </a>
+    {{else}}
+      <a href="/login" class="gs-sidebar__profile gs-sidebar__profile--login" title={{if this.collapsed "Login" ""}}>
+        <span class="gs-sidebar__avatar-placeholder">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        {{#unless this.collapsed}}
+          <span class="gs-sidebar__profile-name">Login</span>
+        {{/unless}}
+      </a>
+    {{/if}}
+  </div>
+
+</nav>

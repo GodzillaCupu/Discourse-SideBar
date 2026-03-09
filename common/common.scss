@@ -1,0 +1,389 @@
+/* ============================================
+   GASING SIDEBAR — standalone collapsible sidebar
+   ============================================ */
+
+/* ─── Layout: push main content to the right ───────────────────────────── */
+:root {
+  --gs-width: 220px;
+  --gs-width-collapsed: 64px;
+  --gs-bg: #ffffff;
+  --gs-border: #e5e7eb;
+  --gs-text: #374151;
+  --gs-text-muted: #6b7280;
+  --gs-blue: #2563eb;
+  --gs-blue-light: #dbeafe;
+  --gs-hover: #f3f4f6;
+  --gs-active-bg: #eff6ff;
+  --gs-active-text: #1d4ed8;
+  --gs-radius: 10px;
+  --gs-transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --gs-font: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --gs-shadow: 2px 0 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Push the Discourse main content wrapper to sit beside our sidebar */
+body {
+  padding-left: var(--gs-width) !important;
+  transition: padding-left var(--gs-transition);
+}
+
+body.gs-collapsed {
+  padding-left: var(--gs-width-collapsed) !important;
+}
+
+/* Also offset top-bar if it still shows (safety) */
+.d-header,
+#site-header {
+  left: var(--gs-width) !important;
+  width: calc(100% - var(--gs-width)) !important;
+  transition: left var(--gs-transition), width var(--gs-transition);
+}
+
+/* ─── Sidebar shell ──────────────────────────────────────────────────────── */
+.gs-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--gs-width);
+  background: var(--gs-bg);
+  border-right: 1px solid var(--gs-border);
+  box-shadow: var(--gs-shadow);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  transition: width var(--gs-transition);
+  font-family: var(--gs-font);
+}
+
+.gs-sidebar--collapsed {
+  width: var(--gs-width-collapsed);
+}
+
+/* When collapsed, also update body padding via JS trick — we use a class toggle */
+.gs-sidebar--collapsed ~ * {
+  /* Cannot do this in pure CSS easily — the JS in the component handles body class */
+}
+
+/* ─── Top: Logo row ──────────────────────────────────────────────────────── */
+.gs-sidebar__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--gs-border);
+  flex-shrink: 0;
+  min-height: 60px;
+}
+
+.gs-sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none !important;
+  overflow: hidden;
+}
+
+.gs-sidebar__logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: -0.5px;
+}
+
+.gs-sidebar__logo-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gs-text);
+  white-space: nowrap;
+}
+
+.gs-sidebar__toggle {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--gs-border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--gs-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.gs-sidebar__toggle:hover {
+  border-color: var(--gs-blue);
+  color: var(--gs-blue);
+  background: var(--gs-blue-light);
+}
+
+/* ─── Navigation ─────────────────────────────────────────────────────────── */
+.gs-sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gs-border) transparent;
+}
+
+.gs-sidebar__nav::-webkit-scrollbar {
+  width: 4px;
+}
+.gs-sidebar__nav::-webkit-scrollbar-thumb {
+  background: var(--gs-border);
+  border-radius: 2px;
+}
+
+/* ─── Nav item ───────────────────────────────────────────────────────────── */
+.gs-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: var(--gs-text) !important;
+  text-decoration: none !important;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.gs-nav-item:hover {
+  background: var(--gs-hover);
+  color: var(--gs-text) !important;
+}
+
+.gs-nav-item--active {
+  background: var(--gs-active-bg) !important;
+  color: var(--gs-active-text) !important;
+}
+
+.gs-nav-item--active .gs-nav-item__icon svg {
+  stroke: var(--gs-active-text);
+}
+
+.gs-nav-item__icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--gs-text-muted);
+}
+
+.gs-nav-item--active .gs-nav-item__icon {
+  color: var(--gs-active-text);
+}
+
+.gs-nav-item__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chevron for group items */
+.gs-nav-item__chevron {
+  margin-left: auto;
+  color: var(--gs-text-muted);
+  transition: transform var(--gs-transition);
+  flex-shrink: 0;
+}
+
+.gs-nav-item--open .gs-nav-item__chevron {
+  transform: rotate(180deg);
+}
+
+/* ─── Children / sub-items ───────────────────────────────────────────────── */
+.gs-nav-group {
+  margin-bottom: 2px;
+}
+
+.gs-nav-children {
+  padding-left: 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+  animation: gs-slide-down 0.18s ease;
+}
+
+@keyframes gs-slide-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gs-nav-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gs-text-muted) !important;
+  text-decoration: none !important;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.gs-nav-child:hover {
+  background: var(--gs-hover);
+  color: var(--gs-text) !important;
+}
+
+.gs-nav-child--active {
+  background: var(--gs-active-bg);
+  color: var(--gs-active-text) !important;
+  font-weight: 600;
+}
+
+.gs-nav-child__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gs-blue);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ─── Bottom: Profile ────────────────────────────────────────────────────── */
+.gs-sidebar__bottom {
+  flex-shrink: 0;
+  padding: 10px 8px;
+  border-top: 1px solid var(--gs-border);
+}
+
+.gs-sidebar__profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--gs-radius);
+  text-decoration: none !important;
+  color: var(--gs-text) !important;
+  transition: background 0.15s;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gs-sidebar__profile:hover {
+  background: var(--gs-hover);
+}
+
+.gs-sidebar__profile--login {
+  color: var(--gs-text-muted) !important;
+}
+
+.gs-sidebar__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--gs-border);
+}
+
+.gs-sidebar__avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #2563eb);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gs-sidebar__profile-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.gs-sidebar__profile-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gs-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gs-sidebar__profile-username {
+  display: block;
+  font-size: 11px;
+  color: var(--gs-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gs-sidebar__profile-chevron {
+  color: var(--gs-text-muted);
+  flex-shrink: 0;
+}
+
+/* ─── Collapsed state overrides ──────────────────────────────────────────── */
+.gs-sidebar--collapsed .gs-sidebar__top {
+  justify-content: center;
+  padding: 16px 8px;
+}
+
+.gs-sidebar--collapsed .gs-nav-item {
+  justify-content: center;
+  padding: 10px;
+}
+
+.gs-sidebar--collapsed .gs-sidebar__profile {
+  justify-content: center;
+  padding: 10px;
+}
+
+/* ─── Mobile: sidebar becomes overlay ───────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --gs-width: 220px;
+    --gs-width-collapsed: 0px;
+  }
+
+  body {
+    padding-left: 0 !important;
+  }
+
+  .gs-sidebar {
+    transform: translateX(0);
+  }
+
+  .gs-sidebar--collapsed {
+    transform: translateX(-100%);
+    width: var(--gs-width);
+    box-shadow: none;
+  }
+}
