@@ -2,7 +2,7 @@
    GASING SIDEBAR — standalone collapsible sidebar
    ============================================ */
 
-/* ─── Layout: push main content to the right ───────────────────────────── */
+/* ─── Layout: push main content to the right of our custom sidebar ───────── */
 :root {
   --gs-width: 220px;
   --gs-width-collapsed: 64px;
@@ -21,22 +21,19 @@
   --gs-shadow: 2px 0 12px rgba(0, 0, 0, 0.06);
 }
 
-/* Push the Discourse main content wrapper to sit beside our sidebar */
+/*
+  The custom sidebar is position:fixed so it doesn't affect document flow.
+  We manually shift body content right by adding padding-left to body.
+  This overrides anything Discourse sets.
+*/
 body {
   padding-left: var(--gs-width) !important;
+  margin-left: 0 !important;
   transition: padding-left var(--gs-transition);
 }
 
 body.gs-collapsed {
   padding-left: var(--gs-width-collapsed) !important;
-}
-
-/* Also offset top-bar if it still shows (safety) */
-.d-header,
-#site-header {
-  left: var(--gs-width) !important;
-  width: calc(100% - var(--gs-width)) !important;
-  transition: left var(--gs-transition), width var(--gs-transition);
 }
 
 /* ─── Sidebar shell ──────────────────────────────────────────────────────── */
