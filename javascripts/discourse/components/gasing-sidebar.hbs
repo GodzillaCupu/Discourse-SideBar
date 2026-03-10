@@ -3,12 +3,12 @@
 
   {{!-- ── TOP: Logo + Collapse Toggle ── --}}
   <div class="gs-sidebar__top">
-    <a href="/" class="gs-sidebar__logo" title="Gasing Community">
-      <span class="gs-sidebar__logo-icon">GC</span>
-      {{#unless this.collapsed}}
+    {{#unless this.collapsed}}
+      <a href="/" class="gs-sidebar__logo" title="Gasing Community">
+        <span class="gs-sidebar__logo-icon">GC</span>
         <span class="gs-sidebar__logo-text">GC LOGO</span>
-      {{/unless}}
-    </a>
+      </a>
+    {{/unless}}
     <button
       class="gs-sidebar__toggle"
       type="button"

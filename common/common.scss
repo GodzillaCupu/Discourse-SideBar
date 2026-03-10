@@ -351,19 +351,47 @@ body.gs-collapsed {
 }
 
 /* ─── Collapsed state overrides ──────────────────────────────────────────── */
+
+/* Top bar: when collapsed, hide the logo entirely, center the toggle button */
 .gs-sidebar--collapsed .gs-sidebar__top {
   justify-content: center;
-  padding: 16px 8px;
+  padding: 14px 0;
 }
 
+.gs-sidebar--collapsed .gs-sidebar__logo {
+  display: none;
+}
+
+/* Toggle button stays visible and centered */
+.gs-sidebar--collapsed .gs-sidebar__toggle {
+  margin: 0 auto;
+}
+
+/* Nav items: icon only, perfectly centered in the 64px strip */
 .gs-sidebar--collapsed .gs-nav-item {
   justify-content: center;
-  padding: 10px;
+  padding: 10px 0;
+  width: 100%;
 }
 
+.gs-sidebar--collapsed .gs-nav-item__icon {
+  margin: 0 auto;
+}
+
+/* Nav group button: same centering */
+.gs-sidebar--collapsed .gs-nav-item--group {
+  justify-content: center;
+}
+
+/* Profile: avatar centered in collapsed strip */
 .gs-sidebar--collapsed .gs-sidebar__profile {
   justify-content: center;
-  padding: 10px;
+  padding: 10px 0;
+}
+
+.gs-sidebar--collapsed .gs-sidebar__avatar,
+.gs-sidebar--collapsed .gs-sidebar__avatar-placeholder {
+  margin: 0 auto;
 }
 
 /* ─── Mobile: sidebar becomes overlay ───────────────────────────────────── */
